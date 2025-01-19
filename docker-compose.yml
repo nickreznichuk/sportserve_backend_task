@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+    mongodb:
+        image: mongo:6.0
+        container_name: mongodb
+        restart: always
+        ports:
+            - '27017:27017'
+        volumes:
+            - mongo-data:/data/db
+
+    express:
+        build:
+            context: .
+            dockerfile: Dockerfile
+        container_name: express-app
+        restart: always
+        ports:
+            - '${PORT}:${PORT}'
+        environment:
+            - DB_URL=${DB_URL}
+            - INFURA_KEY=${INFURA_KEY}
+            - PORT=${PORT}
+        depends_on:
+            - mongodb
+
+volumes:
+    mongo-data:
